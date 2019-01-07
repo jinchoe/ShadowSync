@@ -1,0 +1,125 @@
+oic.wk.shadow.conf: 
+
+{
+   "rt": ["oic.wk.shadow.conf"],
+   "if": ["oic.if.rw", "oic.if.baseline"],
+   "si": "Shadow_Service_ID",
+   "sgr": "coaps://[fe80::b1d6]:1111/oic/shadow/gen",
+   "sgi": true,
+   "sdi": "Shadow_Device_ID",     
+   "sde": ["coaps://[fe80::b1d6]:2222"],
+   "isSynched": true,     
+}
+
+oic.wk.shadow.info: 
+
+{
+  "rt": ["oic.wk.shadow.info"],
+  "if": ["oic.if.rw", "oic.if.baseline"],
+  "odi": "original_Device_ID",
+  "ode": ["coaps://[fe80::b1e6]:55555"],
+  "isSynched": true  
+}
+
+oic.wk.shadow.gen: 
+# POST Request payload 
+
+{
+   "di": "Original_Device_ID", 
+   "ttl": 600,
+   "ssr": "coaps://[fe80::b1e6]:55555/oic/shadow/sync",
+   "ode": ["coaps://[fe80::b1e6]:55555"],
+   "resources": [
+     {
+       "href": "/temperature",
+       "p": {"bm": 1},
+       "rep": {
+         "rt": ["oic.r.temperature"],
+         "if": ["oic.if.s", "oic.if.baseline"],
+         "temperature": 20,
+         "units": "C"
+       }
+     },
+     {
+       "href": "/oic/d",
+       "p": {"bm": 1},
+       "rep": {
+         "rt": ["oic.wk.d", "oic.d.sensor"],
+         "if": ["oic.if.s", "oic.if.baseline"],
+         "di": "Original_Device_ID",
+         "icv": "ocf.2.0.0",
+         "dmv": "ocf.res.1.0.0",
+         "dmn": "foo labs",
+         "dmno": "bar product xxx"
+       }
+     }
+   ]
+}
+
+# POST Response 
+
+[
+  { "href": "/oic/shadow/sync",
+    "anchor": "ocf://Shadow_Device_di",
+    "rt": ["oic.wk.shadow.sync"],
+    "if": ["oic.if.rw", "oic.if.baseline"],
+    "p": {"bm": 0},
+    "eps": [{"ep": "coaps://[fe80::b1d6]:2222"}]
+  },
+  { "href": "/oic/res",
+    "anchor": "ocf://Shadow_Device_di",
+    "rt": ["oic.wk.res"],
+    "if": ["oic.if.r", "oic.if.baseline"],
+    "p": {"bm": 3},
+    "eps": [{"ep": "coaps://[fe80::b1d6]:2222"}]
+  }
+]
+
+oic.wk.shadow.sync:
+
+# POST Request 
+
+{
+  "di": "Original_Device_ID", 
+  "resources": [
+    {
+      "href": "/temperature",
+      "rep": {
+        "temperature": 25
+      }
+    },
+    {
+      "href": "/oic/d",
+      "rep": {
+        "n": "myLivingRoomTemperatureSensor"
+      }
+    }
+  ]
+}
+
+# POST Response  
+
+[
+  {
+    "href": "/temperature",
+    "rep": {
+      "rt": ["oic.r.temperature"],
+      "if": ["oic.if.s", "oic.if.baseline"],
+      "temperature": 25,
+      "units": "C"
+    }
+  },
+  {
+    "href": "/oic/d",
+    "rep": {
+      "rt": ["oic.wk.d", "oic.d.sensor", "oic.d.shadow"],
+      "if": ["oic.if.s", "oic.if.baseline"],
+      "di": "ec70373c-1e8d-4fb3-962e-017eaa863989",
+      "icv": "ocf.2.0.0",
+      "dmv": "ocf.res.1.0.0",
+      "dmn": "foo labs",
+      "dmno": "bar product xxx",
+      "n": "myLivingRoomTemperatureSensor"
+    }
+  }
+]
