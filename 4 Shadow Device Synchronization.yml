@@ -1,0 +1,114 @@
+@startuml
+
+title __Shadow Device Synchronization__
+
+|||
+
+participant OBT 
+participant "Original Device"
+participant "Shadow Generation \nResource" 
+participant "Shadow Device" 
+box "Shadow Service" #White
+participant "Shadow Generation \nResource"
+participant "Shadow Device"
+end box
+
+== 4.1) Original Device to Shadow Device == 
+
+note over "Original Device", "Shadow Device" #Aqua
+In case of a change, Original Device reflects the change to its Shadow Device. 
+endnote  
+
+"Original Device" -> "Original Device": a change happens 
+
+note left of "Original Device"
+Original Device fires off the Sync messages 
+to all Shadow Devices with "isSynched:true" 
+"oic.shadow.sync" URI is from Sync Table. 
+endnote 
+
+"Original Device" -> "Shadow Device": POST /oic/shadow/sync   
+
+note right of "Original Device" #ivory
+{
+  "di": "Original_Device_ID",
+  "resources": [
+    {
+      "href": "/temperature",
+      "rep": {
+        "temperature": 25
+      }
+    },
+    {
+      "href": "/oic/d",
+      "rep": {
+        "n": "myLivingRoomTemperatureSensor"
+      }
+    }
+  ]
+} 
+endnote 
+
+note right of "Shadow Device"
+Shadow Device reflects the change 
+indicated in the payload to the copy Resources 
+and sends back the response with the payload.  
+endnote 
+
+"Shadow Device" --> "Original Device": Response: Changed  
+
+== 4.2) Shadow Device to Original Device == 
+
+note over "Original Device", "Shadow Device" #Aqua
+When a Shadow Device receives an UPDATE Request, 
+the Shadow Device first reflects the update to its Original Device. 
+Only after successful update of the original Device, 
+the Shadow Device accets the UPDATe Request. 
+endnote  
+
+"Shadow Device" -> "Shadow Device": an UPDATE Request  
+
+note right of "Shadow Device"
+Shadow Device sends a Sync message 
+to its original Devices with "isSynched:true" 
+"oic.shadow.sync" URI is from Sync Table. 
+endnote 
+
+"Shadow Device" -> "Original Device": POST /oic/shadow/sync   
+
+note left of "Shadow Device" #ivory
+{
+  "di": "Shadow_Device_ID", 
+  "resources": [
+    {
+      "href": "/temperature",
+      "rep": {
+        "temperature": 45
+     }
+  ]
+}
+endnote 
+
+note left of "Original Device"
+Original Device reflects the change
+indicated in the payload  
+to the matching Resource.  
+endnote 
+
+"Original Device" --> "Shadow Device": Response: Changed  
+
+note right of "Shadow Device"
+Shadow Device accepts the UPDATE Request 
+and changes its Resource. 
+endnote 
+
+note right of "Shadow Device"
+Shadow Device sends back a success Response 
+to the requesting Client. 
+endnote 
+  
+note over "Original Device", "Shadow Device" #Aqua
+Original Device and Shadow Device keep synchronizing themselves.  
+endnote 
+
+@enduml
