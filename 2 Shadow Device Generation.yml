@@ -1,0 +1,116 @@
+@startuml
+
+title __Shadow Device Generation__
+
+|||
+
+participant OBT 
+participant "Original Device"
+participant "Shadow Generation \nResource" 
+participant "Shadow Device" 
+box "Shadow Service" #White
+participant "Shadow Generation \nResource"
+participant "Shadow Device"
+end box
+
+== 2.1) Request to generate a Shadow Device == 
+
+note over OBT, "Shadow Device" #Aqua
+OBT sends a Request to "oic.wk.shadow.gen" in Shadow Service to generate 
+the Shadow Device for the original Device with the Resources in the payload. 
+endnote  
+
+OBT -> "Shadow Generation \nResource": POST /oic/shadow/gen  
+
+note right of OBT #ivory
+{
+   "di": "Original_Device_ID", 
+   "ttl": 600,
+   "ssr": "coaps://[fe80::b1e6]:55555/oic/shadow/sync",
+   "ode": ["coaps://[fe80::b1e6]:55555"],
+   "resources": [
+     {
+       "href": "/temperature",
+       "p": {"bm": 1},
+       "timestamp": 1124000111,
+       "rep": {
+         "rt": ["oic.r.temperature"],
+         "if": ["oic.if.s", "oic.if.baseline"],
+         "temperature": 20,
+         "units": "C"
+       }
+     },
+     {
+       "href": "/oic/d",
+       "p": {"bm": 1},
+       "timestamp": 1124000111,
+       "rep": {
+         "rt": ["oic.wk.d", "oic.d.sensor"],
+         "if": ["oic.if.s", "oic.if.baseline"],
+         "di": "Original_Device_ID",
+         "icv": "ocf.2.0.0",
+         "dmv": "ocf.res.1.0.0",
+         "dmn": "foo labs",
+         "dmno": "bar product xxx"
+       }
+     }
+   ]
+}
+endnote 
+
+"Shadow Generation \nResource" <-> "Shadow Device": Internal call to generate a Shadow Device  
+
+note over "Shadow Generation \nResource", "Shadow Device" 
+Shadow Service generates a Shadow Device 
+with the Resources in the payload and the mandatory Resources 
+(e.g., "oic.wk.shadow.sync" and "oic.wk.shadow.info".  
+endnote 
+
+note right of "Shadow Device"
+Shadow Device has "oic.wk.shadow.info"
+endnote 
+
+note right of "Shadow Device" #ivory
+{
+  "rt": ["oic.wk.shadow.info"],
+  "if": ["oic.if.rw", "oic.if.baseline"],
+  "odi": "original_Device_ID",
+  "ode": ["coaps://[fe80::b1e6]:55555"],
+  "isSynched": true       
+}
+endnote 
+
+== 2.2) Response to Shadow Device Generation == 
+
+note over OBT, "Shadow Device" #Aqua
+Shadow Service sends back a Response with the Links 
+of "oic.wk.shadow.sync" and "oic.wk.res".   
+endnote  
+
+
+"Shadow Generation \nResource" --> OBT: Response: Created with the payload 
+
+note left of "Shadow Generation \nResource" #ivory 
+[
+  { "href": "/oic/shadow/sync",
+    "anchor": "ocf://Shadow_Device_di",
+    "rt": ["oic.wk.shadow.sync"],
+    "if": ["oic.if.rw", "oic.if.baseline"],
+    "p": {"bm": 0},
+    "eps": [{"ep": "coaps://[fe80::b1d6]:2222"}]
+  },
+  { "href": "/oic/res",
+    "anchor": "ocf://Shadow_Device_di",
+    "rt": ["oic.wk.res"],
+    "if": ["oic.if.r", "oic.if.baseline"],
+    "p": {"bm": 3},
+    "eps": [{"ep": "coaps://[fe80::b1d6]:2222"}]
+  }
+]
+endnote 
+
+note over OBT, "Shadow Device" #Aqua
+OBT generated the Shadow Device for its original Device's stead. 
+endnote 
+
+@enduml
