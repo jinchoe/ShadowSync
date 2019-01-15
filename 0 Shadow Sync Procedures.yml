@@ -1,0 +1,150 @@
+@startuml
+
+title __Shadow/ Sync Procedures__   
+
+|||
+
+participant "3rd Party Device" 
+participant "Original Device"
+participant "Shadow Generation \nResource" 
+participant "Shadow Device" 
+box "Shadow Service" #White
+participant "Shadow Generation \nResource"
+participant "Shadow Device"
+end box
+
+== Original Device Onboarding == 
+
+"3rd Party Device" <-> "Original Device": Onboarding Procedure
+
+note over "3rd Party Device", "Original Device": "3rd Party Device" performs existing onboarding procedures.
+
+== Shadow Device Generation == 
+
+"3rd Party Device" -> "Original Device": UPDATE to "oic.shadow.conf"
+
+note right of "Original Device" 
+"3rd Party Device" updates "oic.wk.shadow.conf" 
+to provide Original Device 
+the Shadow Service Inforamtion. 
+endnote 
+
+"Original Device" --> "3rd Party Device": Changed 
+
+note left of "Original Device" 
+Original Device sends CREATE 
+Request to "oic.wk.shadow.gen" 
+to request Shadow Service 
+to generate its Shadow Device. 
+endnote 
+
+"Original Device" -> "Shadow Generation \nResource": CREATE to "oic.wk.shadow.gen" 
+
+
+note over "Shadow Generation \nResource", "Shadow Device" 
+Upon granting the Request, 
+Shadow Service generates the Shadow Device. 
+endnote 
+
+"Shadow Generation \nResource" --> "Original Device": Created
+
+== Shadow Device Onboarding == 
+
+"3rd Party Device" <-> "Shadow Device": Onboarding procedure
+
+note over "3rd Party Device", "Shadow Device"
+"3rd Party Device" performs existing onboarding procedure with Shadow Device
+endnote 
+
+== Shadow Device Synchronization == 
+
+"Original Device" -> "Original Device": a change happens
+
+note left of "Original Device"
+Original Device sends 
+sychronization message 
+to "oic.wk.shadow.sync" 
+to reflect the change 
+to its Shadow Device. 
+endnote
+
+"Original Device" -> "Shadow Device": UPDATE to "oic.wk.shadow.sync"
+
+"Shadow Device" --> "Original Device": Changed
+
+@enduml
+@startuml
+
+title __Shadow/ Sync Procedures__   
+
+|||
+
+participant "3rd Party Device" 
+participant "Original Device"
+participant "Shadow Generation \nResource" 
+participant "Shadow Device" 
+box "Shadow Service" #White
+participant "Shadow Generation \nResource"
+participant "Shadow Device"
+end box
+
+== Original Device Onboarding == 
+
+"3rd Party Device" <-> "Original Device": Onboarding Procedure
+
+note over "3rd Party Device", "Original Device": "3rd Party Device" performs existing onboarding procedures.
+
+== Shadow Device Generation == 
+
+note left of "3rd Party Device" 
+3rd Party Device sends CREATE 
+Request to "oic.wk.shadow.gen" 
+to request Shadow Service 
+to generate its Shadow Device. 
+endnote 
+
+"3rd Party Device" -> "Shadow Generation \nResource": CREATE to "oic.wk.shadow.gen" 
+
+
+note over "Shadow Generation \nResource", "Shadow Device" 
+Upon granting the Request, 
+Shadow Service generates the Shadow Device. 
+endnote 
+
+"Shadow Generation \nResource" --> "3rd Party Device": Created
+
+"3rd Party Device" -> "Original Device": UPDATE to "oic.shadow.conf"
+
+note right of "Original Device" 
+"3rd Party Device" updates "oic.wk.shadow.conf" 
+to provide Original Device 
+the Shadow Service Inforamtion. 
+endnote 
+
+"Original Device" --> "3rd Party Device": Changed 
+
+== Shadow Device Onboarding == 
+
+"3rd Party Device" <-> "Shadow Device": Onboarding procedure
+
+note over "3rd Party Device", "Shadow Device"
+"3rd Party Device" performs existing onboarding procedure with Shadow Device
+endnote 
+
+== Shadow Device Synchronization == 
+
+"Original Device" -> "Original Device": a change happens
+
+note left of "Original Device"
+Original Device sends 
+sychronization message 
+to "oic.wk.shadow.sync" 
+to reflect the change 
+to its Shadow Device. 
+endnote
+
+"Original Device" -> "Shadow Device": UPDATE to "oic.wk.shadow.sync"
+
+"Shadow Device" --> "Original Device": Changed
+
+@enduml
