@@ -4,11 +4,11 @@ oic.wk.shadow.conf:
    "rt": ["oic.wk.shadow.conf"],
    "if": ["oic.if.rw", "oic.if.baseline"],
    "si": "Shadow_Service_ID",
-   "sgr": "coaps://[fe80::b1d6]:1111/oic/shadow/gen",
    "sgi": true,
    "sdi": "Shadow_Device_ID",     
    "sde": ["coaps://[fe80::b1d6]:2222"],
-   "isSynched": true,     
+   "ssr": ["coaps://[fe80::b1d6]:2222/oic/sync"],   
+   "isSynched": true     
 }
 
 oic.wk.shadow.info: 
@@ -18,7 +18,7 @@ oic.wk.shadow.info:
   "if": ["oic.if.rw", "oic.if.baseline"],
   "odi": "original_Device_ID",
   "ode": ["coaps://[fe80::b1e6]:55555"],
-  "isSynched": true  
+  "isSynched": true       
 }
 
 oic.wk.shadow.gen: 
@@ -112,7 +112,7 @@ oic.wk.shadow.sync:
   {
     "href": "/oic/d",
     "rep": {
-      "rt": ["oic.wk.d", "oic.d.sensor", "oic.d.shadow"],
+      "rt": ["oic.wk.d", "oic.d.sensor"],
       "if": ["oic.if.s", "oic.if.baseline"],
       "di": "ec70373c-1e8d-4fb3-962e-017eaa863989",
       "icv": "ocf.2.0.0",
@@ -123,3 +123,30 @@ oic.wk.shadow.sync:
     }
   }
 ]
+
+Teminology: 
+timestamp:
+-Time (# of seconds since Unix epoch) when a resource's state was updated.
+-This is recorded per resource.
+-It is used to determine whether or not a Device's copy of a resource needs to be updated
+upon receiving a request to /oic/shadow/sync.
+
+lastSyncTimestamp:
+-Matches most recent timestamp among all synched resources upon receiving a request to /oic/shadow/sync or
+before sending a response to /oic/shadow/sync.
+-This is recorded on both the Original Device and Shadow Device.
+-It is used both on the Original Device and Shadow Device to determine which
+of the synched resources haven't yet been successfully synchronized so it could
+include their representations in a subsequent /oic/shadow/sync request or response.
+
+/oic/shadow/sync:
+-Key resource to handle synchronization operations between the Original Device and
+Shadow Device via POST/UPDATE method.
+-Both Devices operate on a common set of rules to independently achieve
+synchronized states of all synched resources.
+-While handling requests, it compares timestamps of all included resources with
+its existing records to decide whether to update the states of those resources.
+-It responds to the requestor with chosen updates. In doing so, the requestor
+receives confirmation of synchronization and proceeds to update its resource(s)
+if the response contains more recent state.
+
