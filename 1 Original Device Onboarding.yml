@@ -1,0 +1,68 @@
+@startuml
+
+title __Original Device Onboarding__
+
+|||
+
+participant OBT 
+participant "Original Device"
+participant "Shadow Generation \nResource" 
+participant "Shadow Device" 
+box "Shadow Service" #White
+participant "Shadow Generation \nResource"
+participant "Shadow Device"
+end box
+
+== 1.1) Original Device Ownership Onboarding == 
+
+note over OBT, "Original Device" #Aqua
+OBT takes Ownership of Original Device using any OTM. 
+endnote  
+
+OBT <-> "Original Device": Onboarding Procedure
+
+note over OBT, "Original Device" 
+OBT performs existing onboarding procedures.
+endnote  
+
+== 1.2) "oic.wk.shadow.conf" Discovery == 
+
+note over "OBT", "Original Device" #Aqua
+OBT finds "oic.wk.shadow.conf" of Original Device. 
+endnote 
+
+OBT <-> "Original Device": Multicast GET /oic/res  
+
+note over "OBT", "Original Device" 
+OBT preforms multicast discovery 
+w.r.t /oic/res
+endnote
+
+note right of "Original Device" 
+"oic.wk.shadow.conf" status is
+endnote
+
+note right of "Original Device" #ivory
+{
+   "rt": ["oic.wk.shadow.conf"],
+   "if": ["oic.if.rw", "oic.if.baseline"],
+   "si": "",
+   "sgi": false,
+   "sdi": "",     
+   "sde": [""],
+   "ssr": [""],   
+   "isSynched": false     
+}
+endnote
+
+OBT -> "Original Device": GET /oic/shadow/conf 
+
+"Original Device" --> OBT: Response with paylaod 
+
+
+note over OBT, "Original Device" #Aqua
+OBT finds an Original Device and  
+initiates Shadow Device Generation procedure. 
+endnote 
+
+@enduml
