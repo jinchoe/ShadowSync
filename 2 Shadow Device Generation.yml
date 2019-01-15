@@ -32,7 +32,6 @@ note right of OBT #ivory
      {
        "href": "/temperature",
        "p": {"bm": 1},
-       "timestamp": 1124000111,
        "rep": {
          "rt": ["oic.r.temperature"],
          "if": ["oic.if.s", "oic.if.baseline"],
@@ -43,7 +42,6 @@ note right of OBT #ivory
      {
        "href": "/oic/d",
        "p": {"bm": 1},
-       "timestamp": 1124000111,
        "rep": {
          "rt": ["oic.wk.d", "oic.d.sensor"],
          "if": ["oic.if.s", "oic.if.baseline"],
