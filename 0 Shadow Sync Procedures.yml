@@ -4,7 +4,7 @@ title __Shadow/ Sync Procedures__
 
 |||
 
-participant "3rd Party Device" 
+participant OBT 
 participant "Original Device"
 participant "Shadow Generation \nResource" 
 participant "Shadow Device" 
@@ -15,20 +15,21 @@ end box
 
 == Original Device Onboarding == 
 
-"3rd Party Device" <-> "Original Device": Onboarding Procedure
+OBT <-> "Original Device": Onboarding Procedure
 
-note over "3rd Party Device", "Original Device": "3rd Party Device" performs existing onboarding procedures.
+note over OBT, "Original Device": OBT performs existing onboarding procedures.
 
 == Shadow Device Generation == 
 
-note left of "3rd Party Device" 
-3rd Party Device sends CREATE 
-Request to "oic.wk.shadow.gen" 
+note left of OBT 
+OBT sends CREATE Request 
+to "oic.wk.shadow.gen" 
 to request Shadow Service 
-to generate its Shadow Device. 
+to generate a Shadow Device
+for the original Device. 
 endnote 
 
-"3rd Party Device" -> "Shadow Generation \nResource": CREATE to "oic.wk.shadow.gen" 
+OBT -> "Shadow Generation \nResource": CREATE to "oic.wk.shadow.gen" 
 
 
 note over "Shadow Generation \nResource", "Shadow Device" 
@@ -36,26 +37,26 @@ Upon granting the Request,
 Shadow Service generates the Shadow Device. 
 endnote 
 
-"Shadow Generation \nResource" --> "3rd Party Device": Created
+"Shadow Generation \nResource" --> OBT: Created
 
 == Shadow Device Onboarding == 
 
-"3rd Party Device" <-> "Shadow Device": Onboarding procedure
+OBT <-> "Shadow Device": Onboarding procedure
 
-note over "3rd Party Device", "Shadow Device"
-"3rd Party Device" performs existing onboarding procedure with Shadow Device
+note over OBT, "Shadow Device"
+OBT performs existing onboarding procedure with Shadow Device
 endnote 
 
-"3rd Party Device" -> "Original Device": UPDATE to "oic.shadow.conf"
+OBT -> "Original Device": UPDATE to "oic.shadow.conf"
 
 note right of "Original Device" 
-"3rd Party Device" updates "oic.wk.shadow.conf" 
+OBT updates "oic.wk.shadow.conf" 
 to provide Original Device 
-the Shadow Device Inforamtion and 
+the Shadow Device Information and 
 initiate synchronization. 
 endnote 
 
-"Original Device" --> "3rd Party Device": Changed 
+"Original Device" --> OBT: Changed 
 
 == Shadow Device Synchronization == 
 
