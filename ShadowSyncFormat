@@ -9,6 +9,7 @@ oic.wk.shadow.conf:
   "sde": ["coaps://[fe80::b1d6]:2222"],
   "ssr": ["coaps://[fe80::b1d6]:2222/oic/sync"],
   "synchedresources": ["/oic/d", "/myLightSwitch"],
+  "ttl": 600, 
   "isSynched": true
 }
 
