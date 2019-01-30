@@ -4,7 +4,6 @@ oic.wk.shadow.conf:
   "rt": ["oic.wk.shadow.conf"],
   "if": ["oic.if.rw", "oic.if.baseline"],
   "si": "Shadow_Service_ID",
-  "sgi": true,
   "sdi": "Shadow_Device_ID",
   "sde": ["coaps://[fe80::b1d6]:2222"],
   "ssr": ["coaps://[fe80::b1d6]:2222/oic/sync"],
